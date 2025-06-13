@@ -1,0 +1,21 @@
+venv
+db.sqlite3
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+*.env
+*.DS_Store
+# Ignore migrations
+migrations/ 
+# Ignore coverage reports
+coverage.xml
+# Ignore IDE specific files
+.idea/
+# Ignore Python bytecode files
+*.py[cod]
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
