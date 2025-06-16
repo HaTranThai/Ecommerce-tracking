@@ -1,4 +1,3 @@
-# user/serializers.py
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
@@ -24,18 +23,23 @@ class LoginSerializer(serializers.Serializer):
         data["user"] = user
         return data
 
+
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=6)
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'full_name']
-
+        fields = ['email', 'password', 'full_name', 'phone', 'address', 'gender', 'birth_date']
+    
     def create(self, validated_data):
-        user = User(
-            email=validated_data['email'],
-            full_name=validated_data.get('full_name', '')
-        )
-        user.set_password(validated_data['password'])  # mã hóa mật khẩu
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
         user.save()
         return user
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['full_name', 'phone', 'address', 'gender', 'birth_date', 'avatar']
