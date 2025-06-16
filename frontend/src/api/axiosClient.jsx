@@ -2,9 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 // Cấu hình base URL
-const baseURL = process.env.REACT_APP_API_URL
-    ? `${process.env.REACT_APP_API_URL}/api`
-    : "http://localhost:8000/api";
+const baseURL = "http://localhost:8000/api";
 
 // Tạo instance axios
 const axiosClient = axios.create({

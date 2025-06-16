@@ -4,6 +4,7 @@ import {
     Route,
 } from "react-router-dom";
 import Login from "./pages/Login";
+import Profile from "./pages/Profile";
 
 function AppRoutes() {
     return (
@@ -13,7 +14,12 @@ function AppRoutes() {
                     path="/login"
                     element={<Login />}
                 />
-                {/* Bạn có thể thêm các route khác sau này tại đây */}
+            </Routes>
+            <Routes>
+                <Route
+                    path="/profile"
+                    element={<Profile />}
+                />
             </Routes>
         </Router>
     );

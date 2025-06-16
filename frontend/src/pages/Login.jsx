@@ -13,7 +13,7 @@ const Login = () => {
       const response = await authApi.login(data);
       console.log("Đăng nhập thành công:", response.data);
       // Lưu token, redirect...
-      navigate("/home");
+      navigate("/profile");
     } catch (err) {
       console.error("Đăng nhập thất bại:", err.response?.data || err.message);
     }
