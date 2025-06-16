@@ -35,7 +35,6 @@ const authApi = {
         try {
             await axiosClient.post(url, { refresh: refreshToken });
 
-            // Xóa token sau khi logout
             Cookies.remove('authToken');
             Cookies.remove('refreshToken');
         } catch (error) {

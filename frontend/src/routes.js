@@ -5,10 +5,12 @@ import {
 } from "react-router-dom";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
+import Navbar from "./styles/Navbar";
 
 function AppRoutes() {
     return (
         <Router>
+            <Navbar />
             <Routes>
                 <Route
                     path="/login"
