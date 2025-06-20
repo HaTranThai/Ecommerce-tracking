@@ -10,8 +10,6 @@ export const getUserInfor = async () => {
   }
 };
 
-
-
 export const updateUserInfor = async (data) => {
   const url = `/user/profile/`;
   try {

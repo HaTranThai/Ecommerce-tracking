@@ -13,7 +13,7 @@ const Login = () => {
     try {
       const response = await authApi.login(data);
       console.log("Đăng nhập thành công:", response.data);
-      navigate("/profile");
+      navigate("/");
     } catch (err) {
       console.error("Đăng nhập thất bại:", err.response?.data || err.message);
     }

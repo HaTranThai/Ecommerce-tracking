@@ -1,6 +1,7 @@
 import axiosClient from './axiosClient';
 import Cookies from 'js-cookie';
 
+
 const authApi = {
     login: async (data) => {
         const url = '/user/login/';

@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import authApi from "../api/authApi";
+import { getUserInfor } from "../api/userApi/userInfor"; // Add this import
 import Cookies from "js-cookie";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./Navbar.css";
-import { getUserInfor } from "../api/userApi/userInfor";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const isLoggedIn = !!Cookies.get("authToken");
   const [user, setUser] = useState(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -29,6 +28,7 @@ const Navbar = () => {
     try {
       await authApi.logout();
       Cookies.remove("authToken");
+      Cookies.remove("refreshToken");
       navigate("/login");
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);
@@ -36,9 +36,26 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark shadow-sm" style={{ background: "linear-gradient(90deg, #343a40, #495057)" }}>
+    <nav
+      className="navbar navbar-expand-lg navbar-dark shadow-sm"
+      style={{
+        background: "linear-gradient(90deg, #ff6bd6 0%, #6b6bff 100%)",
+        borderBottom: "2px solid rgba(255, 255, 255, 0.2)",
+      }}
+    >
       <div className="container-fluid">
-        <Link className="navbar-brand fw-bold" to="/" style={{ fontSize: "1.5rem", color: "#f8f9fa" }}>
+        <Link
+          className="navbar-brand fw-bold anime-text"
+          to="/"
+          style={{
+            fontSize: "1.8rem",
+            color: "#fff",
+            textShadow: "0 2px 4px rgba(255, 105, 180, 0.5)",
+            transition: "color 0.3s ease",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "#ffebfe")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "#fff")}
+        >
           Tracking Ecommerce Shop
         </Link>
 
@@ -57,7 +74,24 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto align-items-center">
             <li className="nav-item">
-              <Link className="nav-link" to="/" style={{ color: "#f8f9fa", padding: "0.5rem 1rem" }}>
+              <Link
+                className="nav-link anime-link"
+                to="/"
+                style={{
+                  color: "#fff",
+                  padding: "0.5rem 1rem",
+                  fontWeight: "500",
+                  transition: "transform 0.3s ease, text-shadow 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "scale(1.1)";
+                  e.currentTarget.style.textShadow = "0 2px 4px rgba(255, 105, 180, 0.5)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.textShadow = "none";
+                }}
+              >
                 Trang chủ
               </Link>
             </li>
@@ -65,51 +99,147 @@ const Navbar = () => {
             {!isLoggedIn ? (
               <li className="nav-item">
                 <Link
-                  className="nav-link btn btn-outline-light px-3 py-1 ms-2"
+                  className="nav-link btn px-4 py-1 ms-2 anime-btn"
                   to="/login"
-                  style={{ borderRadius: "10px", transition: "transform 0.3s" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                  style={{
+                    borderRadius: "12px",
+                    background: "linear-gradient(135deg, #3b82f6, #1e3a8a)",
+                    color: "#fff",
+                    border: "none",
+                    transition: "transform 0.3s ease, background 0.3s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.1)";
+                    e.currentTarget.style.background = "linear-gradient(135deg, #1e3a8a, #1e40af)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                    e.currentTarget.style.background = "linear-gradient(135deg, #3b82f6, #1e3a8a)";
+                  }}
                 >
                   Đăng nhập
                 </Link>
               </li>
             ) : (
-              <li className="nav-item dropdown"
-                onMouseEnter={() => setDropdownOpen(true)}
-                onMouseLeave={() => setDropdownOpen(false)}
-              >
+              <li className="nav-item dropdown">
                 <div
-                  className="nav-link d-flex align-items-center"
-                  style={{ cursor: "pointer", color: "#f8f9fa", padding: "0.5rem 1rem" }}
+                  className="nav-link dropdown-toggle d-flex align-items-center anime-dropdown"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  style={{
+                    cursor: "pointer",
+                    color: "#fff",
+                    padding: "0.5rem 1rem",
+                    transition: "transform 0.3s ease, text-shadow 0.3s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.05)";
+                    e.currentTarget.style.textShadow = "0 2px 4px rgba(255, 105, 180, 0.5)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                    e.currentTarget.style.textShadow = "none";
+                  }}
                 >
                   <img
                     src={user?.avatar ? `http://localhost:8000${user.avatar}` : "/default-avatar.png"}
                     alt="avatar"
                     className="rounded-circle me-2 shadow-sm"
-                    style={{ width: "35px", height: "35px", objectFit: "cover", transition: "transform 0.3s" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      objectFit: "cover",
+                      border: "2px solid #ff69b4",
+                      transition: "border-color 0.3s ease",
+                    }}
                   />
-                  <span className="fw-medium">{user?.full_name || "Tài khoản"}</span>
+                  <span
+                    className="fw-medium"
+                    style={{
+                      textShadow: "0 1px 2px rgba(0, 0, 0, 0.3)",
+                    }}
+                  >
+                    {user?.full_name || "Tài khoản"}
+                  </span>
                 </div>
 
-                <ul className={`dropdown-menu ${dropdownOpen ? "show" : ""}`} style={{ borderRadius: "10px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}>
+                <ul
+                  className="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="navbarDropdown"
+                  style={{
+                    borderRadius: "12px",
+                    border: "none",
+                    background: "linear-gradient(145deg, #ffebfe 0%, #d1e9ff 100%)",
+                    boxShadow: "0 6px 15px rgba(255, 105, 180, 0.4)",
+                    minWidth: "220px",
+                  }}
+                >
                   <li>
-                    <Link className="dropdown-item" to="/profile" style={{ padding: "0.5rem 1.5rem", color: "#343a40" }}>
+                    <Link
+                      className="dropdown-item anime-dropdown-item"
+                      to="/profile"
+                      style={{ color: "#2e1065", transition: "background 0.3s ease" }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#ff69b4";
+                        e.currentTarget.style.color = "#fff";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                        e.currentTarget.style.color = "#2e1065";
+                      }}
+                    >
                       Tài Khoản Của Tôi
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="/orders" style={{ padding: "0.5rem 1.5rem", color: "#343a40" }}>
+                    <Link
+                      className="dropdown-item anime-dropdown-item"
+                      to="/my-products"
+                      style={{ color: "#2e1065", transition: "background 0.3s ease" }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#ff69b4";
+                        e.currentTarget.style.color = "#fff";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                        e.currentTarget.style.color = "#2e1065";
+                      }}
+                    >
+                      Sản Phẩm Đã Đăng
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      className="dropdown-item anime-dropdown-item"
+                      to="/orders"
+                      style={{ color: "#2e1065", transition: "background 0.3s ease" }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#ff69b4";
+                        e.currentTarget.style.color = "#fff";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                        e.currentTarget.style.color = "#2e1065";
+                      }}
+                    >
                       Đơn Mua
                     </Link>
                   </li>
                   <li>
                     <span
-                      className="dropdown-item"
+                      className="dropdown-item anime-dropdown-item text-danger"
                       onClick={handleLogout}
-                      style={{ padding: "0.5rem 1.5rem", color: "#dc3545", cursor: "pointer" }}
+                      style={{ cursor: "pointer", transition: "background 0.3s ease" }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#ef4444";
+                        e.currentTarget.style.color = "#fff";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                        e.currentTarget.style.color = "#ef4444";
+                      }}
                     >
                       Đăng Xuất
                     </span>
@@ -120,6 +250,31 @@ const Navbar = () => {
           </ul>
         </div>
       </div>
+
+      <style jsx>{`
+        .anime-text:hover {
+          color: #ffebfe !important;
+        }
+        .anime-link:hover {
+          transform: scale(1.1);
+          text-shadow: 0 2px 4px rgba(255, 105, 180, 0.5);
+        }
+        .anime-btn:hover {
+          transform: scale(1.1);
+          background: linear-gradient(135deg, #1e3a8a, #1e40af) !important;
+        }
+        .anime-dropdown:hover {
+          transform: scale(1.05);
+          text-shadow: 0 2px 4px rgba(255, 105, 180, 0.5);
+        }
+        .anime-dropdown-item {
+          transition: background 0.3s ease, color 0.3s ease;
+        }
+        .anime-dropdown-item:hover {
+          background: #ff69b4 !important;
+          color: #fff !important;
+        }
+      `}</style>
     </nav>
   );
 };
