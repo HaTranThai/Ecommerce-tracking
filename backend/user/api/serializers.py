@@ -2,6 +2,9 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from ..models import Cart, CartItem, Address
+from product.api.serializers import ProductSerializer
+from product.models import Product
 
 User = get_user_model()
 
@@ -29,7 +32,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'full_name', 'phone', 'address', 'gender', 'birth_date']
+        fields = ['email', 'password', 'full_name', 'phone', 'gender', 'birth_date']
     
     def create(self, validated_data):
         password = validated_data.pop('password')
@@ -42,4 +45,26 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['full_name', 'phone', 'address', 'gender', 'birth_date', 'avatar']
+        fields = ['full_name', 'phone', 'gender', 'birth_date', 'avatar']
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = '__all__'
+        read_only_fields = ['user']
+
+class CartItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+    product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), source='product', write_only=True)
+
+    class Meta:
+        model = CartItem
+        fields = ['id', 'product', 'product_id', 'quantity']
+
+class CartSerializer(serializers.ModelSerializer):
+    items = CartItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Cart
+        fields = ['id', 'user', 'items']
+        read_only_fields = ['user']

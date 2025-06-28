@@ -1,9 +1,14 @@
+from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import LoginSerializer, RegisterSerializer, UserProfileSerializer
+from ..models import Cart, CartItem, Address
+from .serializers import CartSerializer, CartItemSerializer
+from .serializers import AddressSerializer
+from rest_framework import generics, permissions
 
 class LoginAPIView(APIView):
     permission_classes = [AllowAny]
@@ -87,4 +92,50 @@ class UserProfileAPIView(APIView):
             "success": True,
             "message": "Xóa tài khoản thành công."
         }, status=status.HTTP_204_NO_CONTENT)
-        
+    
+
+class AddressListCreateView(generics.ListCreateAPIView):
+    serializer_class = AddressSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        # Nếu user chưa có địa chỉ default, gán luôn địa chỉ đầu tiên là default
+        is_first = not Address.objects.filter(user=self.request.user).exists()
+        serializer.save(user=self.request.user, is_default=is_first)
+
+class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = AddressSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
+
+class CartViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)
+
+class CartItemViewSet(viewsets.ModelViewSet):
+    serializer_class = CartItemSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        cart, _ = Cart.objects.get_or_create(user=self.request.user)
+        return cart.items.all()
+
+    def perform_create(self, serializer):
+        cart, _ = Cart.objects.get_or_create(user=self.request.user)
+        product = self.request.data.get("product_id")
+
+        existing_item = CartItem.objects.filter(cart=cart, product_id=product).first()
+        if existing_item:
+            existing_item.quantity += int(self.request.data.get("quantity", 1))
+            existing_item.save()
+        else:
+            serializer.save(cart=cart)
