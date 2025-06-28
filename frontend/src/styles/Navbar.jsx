@@ -1,15 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import authApi from "../api/authApi";
-import { getUserInfor } from "../api/userApi/userInfor"; // Add this import
+import { getUserInfor } from "../api/userApi/userInfor";
 import Cookies from "js-cookie";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { getCartItem } from "../api/cartApi/getCart";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const isLoggedIn = !!Cookies.get("authToken");
   const [user, setUser] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const items = await getCartItem();
+        const total = items.count;
+        setCartCount(total);
+      } catch (error) {
+        console.error("Không thể lấy số lượng giỏ hàng:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isLoggedIn) {
+      fetchCart();
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -95,6 +118,26 @@ const Navbar = () => {
                 Trang chủ
               </Link>
             </li>
+            <Link
+              className="nav-link position-relative"
+              to="/cart"
+              style={{
+                color: "#fff",
+                fontSize: "1.3rem",
+                padding: "0.5rem",
+                transition: "transform 0.3s ease",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              <FontAwesomeIcon icon={faShoppingCart} />
+              
+              {!loading && cartCount > 0 && (
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
 
             {!isLoggedIn ? (
               <li className="nav-item">
@@ -271,7 +314,7 @@ const Navbar = () => {
           transition: background 0.3s ease, color 0.3s ease;
         }
         .anime-dropdown-item:hover {
-          background: #ff69b4 !important;
+          background:rgb(211, 4, 4) !important;
           color: #fff !important;
         }
       `}</style>

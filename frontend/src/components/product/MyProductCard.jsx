@@ -50,63 +50,113 @@ const ProductCard = ({ product, setProducts }) => {
           }}
         ></div>
 
-        {product.image ? (
-          <img
-            src={product.image.startsWith("http") ? product.image : `http://localhost:8000${product.image}`}
-            alt={product.name}
-            className="card-img-top"
-            style={{
-              height: "220px",
-              objectFit: "cover",
-              borderRadius: "20px 20px 0 0",
-              transition: "transform 0.4s ease",
-            }}
-          />
-        ) : (
-          <div
-            className="bg-gradient d-flex align-items-center justify-content-center text-white"
-            style={{
-              height: "220px",
-              borderRadius: "20px 20px 0 0",
-              background: "linear-gradient(135deg, #a0c4ff, #c4b7ff)",
-              fontSize: "1.2rem",
-              fontWeight: "bold",
-              textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            Không có hình ảnh
-          </div>
-        )}
+        <div style={{ position: "relative" }}>
+          {/* Discount badge */}
+          {product.discount > 0 && (
+            <div
+              style={{
+                position: "absolute",
+                top: "10px",
+                right: "10px",
+                backgroundColor: "#ef4444",
+                color: "white",
+                padding: "6px 12px",
+                borderRadius: "20px",
+                fontSize: "0.9rem",
+                fontWeight: "bold",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                zIndex: 2,
+              }}
+            >
+              -{product.discount}%
+            </div>
+          )}
+
+          {product.image ? (
+            <img
+              src={
+                product.image.startsWith("http")
+                  ? product.image
+                  : `http://localhost:8000${product.image}`
+              }
+              alt={product.name}
+              className="card-img-top"
+              style={{
+                height: "220px",
+                objectFit: "cover",
+                borderRadius: "20px 20px 0 0",
+                transition: "transform 0.4s ease",
+              }}
+            />
+          ) : (
+            <div
+              className="d-flex align-items-center justify-content-center text-white"
+              style={{
+                height: "220px",
+                borderRadius: "20px 20px 0 0",
+                background: "linear-gradient(135deg, #a0c4ff, #c4b7ff)",
+                fontSize: "1.2rem",
+                fontWeight: "bold",
+                textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
+              }}
+            >
+              Không có hình ảnh
+            </div>
+          )}
+        </div>
 
         <div className="card-body p-4" style={{ position: "relative", zIndex: 1 }}>
-          <h5 className="card-title fw-bold mb-3 anime-text" style={{ color: "#2e1065", textShadow: "0 2px 4px rgba(255, 105, 180, 0.4)", fontSize: "1.5rem" }}>
+          <h5
+            className="card-title fw-bold mb-3 anime-text two-line-ellipsis"
+            style={{
+              color: "#2e1065",
+              textShadow: "0 2px 4px rgba(255, 105, 180, 0.4)",
+              fontSize: "1.1rem",
+            }}
+          >
             {product.name}
           </h5>
           <p className="card-text mb-2">
             <strong className="text-muted">Giá:</strong>{" "}
-            <span style={{ color: "#db2777", fontWeight: "bold" }}>{product.price.toLocaleString()}₫</span>
+            <span style={{ color: "#db2777", fontWeight: "bold" }}>
+              {product.price.toLocaleString()}₫
+            </span>
           </p>
           <p className="card-text mb-4">
             <strong className="text-muted">Tồn kho:</strong>{" "}
-            <span style={{ fontWeight: "bold", color: product.inventory > 0 ? "#22c55e" : "#ef4444" }}>
+            <span
+              style={{
+                fontWeight: "bold",
+                color: product.inventory > 0 ? "#22c55e" : "#ef4444",
+              }}
+            >
               {product.inventory}
             </span>
           </p>
           <div className="d-flex gap-2">
-            <Link to={`/products/${product.id}`} className="btn anime-btn anime-btn-view fw-medium flex-grow-1">
+            <Link
+              to={`/products/${product.id}`}
+              className="btn anime-btn anime-btn-view fw-medium flex-grow-1"
+            >
               Xem chi tiết
             </Link>
-            <Link to={`/products/${product.id}/update`} className="btn anime-btn anime-btn-edit fw-medium flex-grow-1">
+            <Link
+              to={`/products/${product.id}/update`}
+              className="btn anime-btn anime-btn-edit fw-medium flex-grow-1"
+            >
               Chỉnh sửa
             </Link>
-            <button onClick={() => setShowConfirm(true)} className="btn btn-danger btn-sm anime-btn-delete">
+            <button
+              onClick={() => setShowConfirm(true)}
+              className="btn btn-danger btn-sm anime-btn-delete"
+            >
               Xóa
             </button>
           </div>
         </div>
       </div>
 
-      {/* Confirm Delete Modal */}
+      {/* Confirm Modal */}
       {showConfirm && (
         <div
           className="modal fade show"
@@ -117,10 +167,17 @@ const ProductCard = ({ product, setProducts }) => {
             <div className="modal-content shadow">
               <div className="modal-header">
                 <h5 className="modal-title">Xác nhận xóa</h5>
-                <button type="button" className="btn-close" onClick={() => setShowConfirm(false)}></button>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowConfirm(false)}
+                ></button>
               </div>
               <div className="modal-body">
-                <p>Bạn có chắc chắn muốn xóa sản phẩm <strong>{product.name}</strong> không?</p>
+                <p>
+                  Bạn có chắc chắn muốn xóa sản phẩm{" "}
+                  <strong>{product.name}</strong> không?
+                </p>
               </div>
               <div className="modal-footer">
                 <button className="btn btn-secondary" onClick={() => setShowConfirm(false)}>
@@ -181,6 +238,15 @@ const ProductCard = ({ product, setProducts }) => {
             opacity: 1;
             transform: scale(1) translateY(0);
           }
+        }
+        .two-line-ellipsis {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          line-height: 1.4em;
+          height: 2.8em;
         }
       `}</style>
     </>

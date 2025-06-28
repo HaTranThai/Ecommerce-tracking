@@ -41,9 +41,6 @@ const GetProfileForm = ({ user }) => {
             <div className="col-md-6">
               <p className="mb-2"><strong className="text-muted">Ngày sinh:</strong> <span className="text-dark">{user.birth_date || "..."}</span></p>
             </div>
-            <div className="col-md-12">
-              <p className="mb-2"><strong className="text-muted">Địa chỉ:</strong> <span className="text-dark">{user.address || "..."}</span></p>
-            </div>
           </div>
         </div>
       </div>

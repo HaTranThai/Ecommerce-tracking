@@ -13,7 +13,11 @@ export const getUserInfor = async () => {
 export const updateUserInfor = async (data) => {
   const url = `/user/profile/`;
   try {
-    const response = await axiosClient.put(url, data);
+    const response = await axiosClient.put(url, data, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
     return response.data;
   } catch (error) {
     throw error;

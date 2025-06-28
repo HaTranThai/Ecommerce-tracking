@@ -9,6 +9,8 @@ import Home from "./pages/Home";
 import MyProducts from "./pages/MyProducts";
 import ProductDetail from "./pages/ProductDetail";
 import UpdateProduct from "./pages/UpdateProduct";
+import Cart from "./pages/Cart";
+import Order from "./pages/Order";
 import Navbar from "./styles/Navbar";
 
 function AppRoutes() {
@@ -19,6 +21,18 @@ function AppRoutes() {
                 <Route
                     path="/"
                     element={<Home />}
+                />
+            </Routes>
+            <Routes>
+                <Route
+                    path="/cart"
+                    element={<Cart />}
+                />
+            </Routes>
+            <Routes>
+                <Route
+                    path="/orders"
+                    element={<Order />}
                 />
             </Routes>
             <Routes>
