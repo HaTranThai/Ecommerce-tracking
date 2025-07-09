@@ -21,4 +21,4 @@ coverage.xml
 *.py[cod]
 # Ignore virtual environment directories
 # Ignore test output files
-test_output/
+test_output/ 
