@@ -39,6 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_vendor = models.BooleanField(default=False)
 
     date_joined = models.DateTimeField(auto_now_add=True)
+    last_login = models.DateTimeField(null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -60,6 +61,11 @@ class Customer(models.Model):
     date_join = models.DateTimeField(auto_now_add=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='customer')
 
+    def save(self, *args, **kwargs):
+        if not self.full_name:
+            self.full_name = self.user.email
+        super().save(*args, **kwargs)
+
     class Meta:
         db_table = 'customer'
 
@@ -70,6 +76,11 @@ class Vendor(models.Model):
     description = models.TextField(null=True, blank=True)
     date_join = models.DateTimeField(auto_now_add=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='vendor')
+
+    def save(self, *args, **kwargs):
+        if not self.full_name:
+            self.full_name = self.user.email
+        super().save(*args, **kwargs)
 
     class Meta:
         db_table = 'vendor'

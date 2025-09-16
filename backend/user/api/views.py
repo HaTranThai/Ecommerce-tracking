@@ -124,14 +124,14 @@ class VendorProfileView(RetrieveAPIView):
     
 class UpdateCustomerProfileView(UpdateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = CustomerSerializer
+    serializer_class = CustomerProfileSerializer
 
     def get_object(self):
         return self.request.user.customer
     
 class UpdateVendorProfileView(UpdateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = VendorSerializer
+    serializer_class = VendorProfileUpdateSerializer
 
     def get_object(self):
         return self.request.user.vendor
